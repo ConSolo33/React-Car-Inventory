@@ -2,7 +2,8 @@ import CarForm from "./CarForm";
 
 
 interface Props {
-    open?: boolean;
+    id?: string[];
+    open: boolean;
     onClose: () => void;
 }
 
@@ -25,11 +26,11 @@ const Modal = ( props: Props ) => {
                         <p className="flex justify-start m-3 bg-black text-white
                          hover:text-black hover:bg-slate-300 hover:cursor-pointer rounded p-1"
                         onClick={props.onClose}>
-                        <i class="fa-solid fa-xmark"></i>
+                        <i className="fa-solid fa-xmark"></i>
                         </p>
                     </div>
                     <div className="flex flex-col items-center text-center mt-3 p-2">
-                        <CarForm />
+                        <CarForm id={ props.id }/>
                     </div>
                 </div>
             </div>

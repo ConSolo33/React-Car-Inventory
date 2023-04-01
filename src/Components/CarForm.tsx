@@ -2,17 +2,37 @@ import Input from "./Input"
 import Button from "./Button"
 
 import { useForm } from 'react-hook-form'
+import { server_calls } from '../api/server'
+import { useDispatch, useStore } from 'react-redux'
+import { chooseMake, chooseModel, chooseYear, chooseColor, chooseCondition, chooseMiles } from '../redux/slices/RootSlice'
 
 interface CarFormProps {
-    id?: string,
-    data?: {}
+    id?: string[]
 }
 
 const CarForm = (props: CarFormProps) => {
   const { register, handleSubmit } = useForm({})
+  const dispatch = useDispatch();
+  const store = useStore();
 
-  const onSubmit = () => {
-    console.log('pass');
+  const onSubmit = (data: any, event: any) => {
+    console.log(`ID: ${props.id}`);
+    if (props.id && props.id.length > 0) {
+        server_calls.update(props.id[0], data)
+        console.log(`Updated: ${ data } ${ props.id }`);
+        setTimeout( () => {window.location.reload()}, 1000);
+        event.target.reset()
+    } else {
+        dispatch(chooseMake(data.make));
+        dispatch(chooseModel(data.model));
+        dispatch(chooseYear(data.year));
+        dispatch(chooseColor(data.color));
+        dispatch(chooseCondition(data.condition));
+        dispatch(chooseMiles(data.miles));
+
+        server_calls.create(store.getState())
+        setTimeout( () => {window.location.reload()}, 1000);
+    }
     
   }
 
