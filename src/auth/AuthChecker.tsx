@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithPopup } from "firebase/auth";
+import { onAuthStateChanged, signInWithRedirect } from "firebase/auth";
 import { auth, Providers } from '../Config/firebase'
 
 interface Props {
@@ -9,14 +9,19 @@ interface Props {
 
 const AuthChecker = ({ children }: Props) => {
     const navigate = useNavigate();
-
+    const signInOnClick = async () => {
+        const response = await signInWithRedirect(auth, Providers.google);
+    }
     useEffect(() => {
-        if (!auth.currentUser) { 
-            navigate("../")
-            signInWithPopup(auth, Providers.google)
-        }
+        const auth_state = onAuthStateChanged(auth, (user) => {
+            if (!user) { 
+                signInOnClick()
+                navigate("../")
+            }
+        })
+        return () => auth_state()
 
-    }, [])
+    }, [auth, navigate])
     
     return (
         <>{ children }</>
